@@ -79,6 +79,7 @@ class ExpandableFab extends StatefulWidget {
     this.onClose,
     this.afterClose,
     this.overlayStyle,
+    this.rotateActions = true,
   }) : super(key: key);
 
   /// Distance from children.
@@ -125,6 +126,9 @@ class ExpandableFab extends StatefulWidget {
 
   /// Provides the style for overlay. No overlay when null.
   final ExpandableFabOverlayStyle? overlayStyle;
+
+  /// Whether or not to rotate action buttons into and out of place
+  final bool rotateActions;
 
   @override
   State<ExpandableFab> createState() => ExpandableFabState();
@@ -328,6 +332,7 @@ class ExpandableFabState extends State<ExpandableFab>
           progress: _expandAnimation,
           offset: totalOffset,
           fabPos: widget.pos,
+          rotate: widget.rotateActions,
           child: widget.children[i],
         ),
       );
@@ -390,6 +395,7 @@ class _ExpandingActionButton extends StatelessWidget {
     required this.child,
     required this.fabPos,
     required this.offset,
+    this.rotate = true,
   });
 
   final double directionInDegrees;
@@ -398,6 +404,7 @@ class _ExpandingActionButton extends StatelessWidget {
   final Offset offset;
   final ExpandableFabPos fabPos;
   final Widget child;
+  final bool rotate;
 
   @override
   Widget build(BuildContext context) {
@@ -412,13 +419,18 @@ class _ExpandingActionButton extends StatelessWidget {
           right: fabPos == ExpandableFabPos.right ? offset.dx + pos.dx : null,
           left: fabPos == ExpandableFabPos.right ? null : -offset.dx + pos.dx,
           bottom: offset.dy + pos.dy,
-          child: Transform.rotate(
-            angle: (1.0 - progress.value) * math.pi / 2,
-            child: IgnorePointer(
-              ignoring: progress.value != 1,
-              child: child,
-            ),
-          ),
+          child: rotate
+              ? Transform.rotate(
+                  angle: (1.0 - progress.value) * math.pi / 2,
+                  child: IgnorePointer(
+                    ignoring: progress.value != 1,
+                    child: child,
+                  ),
+                )
+              : IgnorePointer(
+                  ignoring: progress.value != 1,
+                  child: child,
+                ),
         );
       },
       child: FadeTransition(
