@@ -80,6 +80,7 @@ class ExpandableFab extends StatefulWidget {
     this.afterClose,
     this.overlayStyle,
     this.rotateActions = true,
+    this.margin = kFloatingActionButtonMargin,
   }) : super(key: key);
 
   /// Distance from children.
@@ -129,6 +130,9 @@ class ExpandableFab extends StatefulWidget {
 
   /// Whether or not to rotate action buttons into and out of place
   final bool rotateActions;
+
+  /// The margin around the FAB. By default kFloatingActionButtonMargin is used.
+  final double margin;
 
   @override
   State<ExpandableFab> createState() => ExpandableFabState();
@@ -207,13 +211,13 @@ class ExpandableFabState extends State<ExpandableFab>
         }
         double x;
         if (widget.pos == ExpandableFabPos.right) {
-          x = kFloatingActionButtonMargin + geometry.minInsets.right;
+          x = widget.margin + geometry.minInsets.right;
         } else {
-          x = -kFloatingActionButtonMargin - geometry.minInsets.left;
+          x = -widget.margin - geometry.minInsets.left;
         }
         final bottomContentHeight =
             geometry.scaffoldSize.height - geometry.contentBottom;
-        final y = kFloatingActionButtonMargin +
+        final y = widget.margin +
             math.max(geometry.minViewPadding.bottom, bottomContentHeight);
         if (offset != Offset(x, y)) {
           offset = Offset(x, y);
